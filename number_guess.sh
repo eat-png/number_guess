@@ -54,3 +54,12 @@ do
     echo "It's higher than that, guess again:"
   fi
 done
+
+# Update games_played
+$PSQL "UPDATE users SET games_played = games_played + 1 WHERE username='$USERNAME'" > /dev/null
+
+# Update best_game only if it's a new record (or first game)
+if [[ $BEST_GAME -eq 0 || $NUMBER_OF_GUESSES -lt $BEST_GAME ]]
+then
+  $PSQL "UPDATE users SET best_game = $NUMBER_OF_GUESSES WHERE username='$USERNAME'" > /dev/null
+fi
